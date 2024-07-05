@@ -51,9 +51,12 @@ def run_bot():
                 data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
 
                 song = data["url"]
+                title = data["title"]
                 player = discord.FFmpegOpusAudio(song, **ffmpeg_options)
 
                 voice_client.play(player)
+                
+                await message.channel.send(f"Now playing: {title}") # Makes comment in the discord channel of what is playing
 
             except Exception as e:
                 print(f"Error playing audio: {e}")
@@ -88,4 +91,3 @@ def run_bot():
                 print(f"Error stopping audio: {e}")
 
     client.run(TOKEN)
-
