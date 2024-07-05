@@ -6,6 +6,8 @@ A Discord bot that plays music in voice channels using Python and Discord.py.
 
 - Plays music from YouTube URLs in voice channels.
 - Supports commands to play, pause, resume, and stop music playback.
+- Queue functionality to manage multiple song requests.
+- Announces the currently playing song and queued songs.
 - Uses `yt-dlp` for extracting YouTube video URLs.
 
 ## Prerequisites
@@ -48,6 +50,7 @@ A Discord bot that plays music in voice channels using Python and Discord.py.
   - `dreamypause`: Pauses the currently playing music.
   - `dreamyresume`: Resumes paused music playback.
   - `dreamystop`: Stops playing music and disconnects the bot from the voice channel.
+  - `dreamyskip`: Skips the currently playing song and plays the next song in the queue.
 
 ## Contributing
 
@@ -63,4 +66,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Replace `your_discord_bot_token` with your actual Discord bot token in the `.env` setup section.
 - Ensure you have Python, necessary libraries (`discord.py`, `yt-dlp`), and FFmpeg installed before running the bot.
 - Customize commands (`dreamyplay`, `dreamypause`, etc.) to fit your bot's prefix or naming convention.
-- Add any additional sections or information specific to your bot's functionality or setup process.
+

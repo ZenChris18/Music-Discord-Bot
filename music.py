@@ -11,8 +11,9 @@ def run_bot():
     intents.message_content = True
     client = discord.Client(intents=intents)
     
-    # Dictionary to store voice_client instances for each server
+    # Dictionary to store voice_client instances and queues for each server
     voice_clients = {}
+    queues = {}
 
     yt_dl_options = {"format": "bestaudio/best"}
     ytdl = yt_dlp.YoutubeDL(yt_dl_options)
@@ -25,6 +26,19 @@ def run_bot():
     @client.event
     async def on_ready():
         print(f"{client.user} is now online and ready to play music!")
+
+    async def play_next(guild_id, text_channel):
+        if queues[guild_id]:
+            url = queues[guild_id].pop(0)
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
+            
+            song = data["url"]
+            title = data["title"]
+            player = discord.FFmpegOpusAudio(song, **ffmpeg_options)
+            
+            voice_clients[guild_id].play(player, after=lambda e: client.loop.create_task(play_next(guild_id, text_channel)))
+            await text_channel.send(f"Now playing: {title}") # Adds text of what is now playing
 
     @client.event
     async def on_message(message):
@@ -47,28 +61,29 @@ def run_bot():
                     else:
                         voice_client = await voice_channel.connect()
                         voice_clients[guild_id] = voice_client
+                    if guild_id not in queues:
+                        queues[guild_id] = []
                 else:
                     await message.channel.send("You need to be in a voice channel to use this command.")
+                    return
 
             except Exception as e:
                 print(f"Error connecting to voice channel: {e}")
+                return
 
             try:
                 url = message.content.split()[1]
-
-                loop = asyncio.get_event_loop()
-                data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
-
-                song = data["url"]
-                title = data["title"]
-                player = discord.FFmpegOpusAudio(song, **ffmpeg_options)
-
-                voice_clients[guild_id].play(player)
-                
-                await message.channel.send(f"Now playing: {title}") # Makes comment in the discord channel of what is playing
+                queues[guild_id].append(url)
+                if not voice_clients[guild_id].is_playing():
+                    await play_next(guild_id, message.channel)
+                else:
+                    data = await asyncio.get_event_loop().run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
+                    title = data["title"]
+                    queue_position = len(queues[guild_id])
+                    await message.channel.send(f"'{title}' added to queue. Position: {queue_position}")
 
             except Exception as e:
-                print(f"Error playing audio: {e}")
+                print(f"Error adding song to queue: {e}")
 
         if message.content.startswith("dreamypause"):
             try:
@@ -94,9 +109,20 @@ def run_bot():
                     voice_clients[guild_id].stop()
                     await voice_clients[guild_id].disconnect()
                     del voice_clients[guild_id]  # Remove the voice_client from the dictionary
+                    queues[guild_id].clear()  # Clear the queue for the guild
                 else:
                     await message.channel.send("Nothing is playing to stop.")
             except Exception as e:
                 print(f"Error stopping audio: {e}")
+
+        if message.content.startswith("dreamyskip"):
+            try:
+                if guild_id in voice_clients and voice_clients[guild_id].is_playing():
+                    voice_clients[guild_id].stop()
+                    await play_next(guild_id, message.channel)
+                else:
+                    await message.channel.send("Nothing is playing to skip.")
+            except Exception as e:
+                print(f"Error skipping audio: {e}")
 
     client.run(TOKEN)
