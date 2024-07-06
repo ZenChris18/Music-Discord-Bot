@@ -26,6 +26,13 @@ def run_bot():
     @client.event
     async def on_ready():
         print(f"{client.user} is now online and ready to play music!")
+        await self_ping()
+
+    async def self_ping():
+        await asyncio.sleep(600)  # Sleep for 600 seconds (10 minutes)
+        await client.wait_until_ready()
+        print("Self ping executed.")  # Log a message indicating self ping execution
+        await self_ping()  # Schedule the next self ping
 
     async def play_next(guild_id, text_channel):
         if queues[guild_id]:
@@ -125,8 +132,5 @@ def run_bot():
             except Exception as e:
                 print(f"Error skipping audio: {e}")
 
-        # Ping Command
-        if message.content.startswith("!ping"):
-            await message.channel.send("Pong! I'm awake and ready to play music.")
-
     client.run(TOKEN)
+
