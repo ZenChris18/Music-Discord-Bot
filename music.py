@@ -29,7 +29,7 @@ def run_bot():
         await self_ping()
 
     async def self_ping():
-        await asyncio.sleep(600)  # Sleep for 600 seconds (10 minutes)
+        await asyncio.sleep(60)  # Sleep for 600 seconds (10 minutes)
         await client.wait_until_ready()
         print("Self ping executed.")  # Log a message indicating self ping execution
         await self_ping()  # Schedule the next self ping
