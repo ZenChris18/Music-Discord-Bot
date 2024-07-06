@@ -67,3 +67,21 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Ensure you have Python, necessary libraries (`discord.py`, `yt-dlp`), and FFmpeg installed before running the bot.
 - Customize commands (`dreamyplay`, `dreamypause`, etc.) to fit your bot's prefix or naming convention.
 
+### Features to implement in the future
+
+1. Repeat Functionality - able to repeat certain tracks 
+2. Playlist Support - able to play whole playlists
+3. randomize queue or playlist given - randomize current queue or tracks
+4. Song Search - able to just type the title of the song or other details then play music the one the program searches
+5. Now Playing Command - enhance the currently playing command, currently it only display title. in the future i will try to add the duration.
+6. Error Handling and Logging: Improve error handling and log messages to help diagnose issues.
+7. Music Queue Management: Enhance queue management with commands to view, reorder, remove specific songs, or clear the entire queue.
+8. Shuffle Command: Allow users to shuffle the queue or playlist.
+9. Integration with Music APIs: Explore integrating with music APIs like Spotify, SoundCloud, or others for broader music selection.
+10. User Permissions: Implement permission checks to restrict certain commands to server admins or specific roles.
+11. Cross-Server Support: Ensure the bot can handle requests and queues independently across multiple servers. (Not Sure if fixed)
+12. Interactive Help Command: Create a detailed help command to guide users on how to use different features.
+13. Customizable Prefix: Allow server admins to customize the bot's command prefix.
+14. Pause on Disconnect: Automatically pause playback when the bot is disconnected from a voice channel due to network issues or server restarts. (not necessarily needed)
+15. Vote Skip: Implement a voting system to skip songs democratically. (have voting system?)
+16. Playback Statistics: Track and display statistics such as total songs played, most played songs, etc.
