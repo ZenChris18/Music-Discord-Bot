@@ -125,4 +125,8 @@ def run_bot():
             except Exception as e:
                 print(f"Error skipping audio: {e}")
 
+        # Ping Command
+        if message.content.startswith("!ping"):
+            await message.channel.send("Pong! I'm awake and ready to play music.")
+
     client.run(TOKEN)
